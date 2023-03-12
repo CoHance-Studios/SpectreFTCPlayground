@@ -164,6 +164,7 @@ public class FtcRobotControllerActivity extends Activity
   protected TextView[] textGamepad = new TextView[NUM_GAMEPADS];
   protected TextView textOpMode;
   protected TextView textErrorMessage;
+  public static Context ctxt;
   protected ImmersiveMode immersion;
 
   protected UpdateUI updateUI;
@@ -291,6 +292,7 @@ public class FtcRobotControllerActivity extends Activity
     }
 
     context = this;
+    ctxt = getApplicationContext();
     utility = new Utility(this);
 
     DeviceNameManagerFactory.getInstance().start(deviceNameStartResult);

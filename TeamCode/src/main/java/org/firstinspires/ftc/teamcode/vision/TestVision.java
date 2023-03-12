@@ -10,6 +10,7 @@ import android.graphics.ColorSpace;
 import android.graphics.Paint;
 
 import org.checkerframework.checker.units.qual.C;
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -19,11 +20,14 @@ import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 import org.firstinspires.ftc.teamcode.ml.ModelUnquant;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 public class TestVision extends OpenCvPipeline {
     public String log = "";
+    public int pos = -1;
+
     @Override
     public Mat processFrame(Mat input) {
         Mat bw = new Mat();
@@ -32,13 +36,17 @@ public class TestVision extends OpenCvPipeline {
 
         Bitmap bitmap = Bitmap.createBitmap(resizedInput.width(), resizedInput.height(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(resizedInput, bitmap);
-        log = classifyImage(bitmap);
+        try {
+            pos = classifyImage(bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Utils.bitmapToMat(bitmap, bw);
         return bw;
     }
 
-    String classifyImage(Bitmap image){
-        ModelUnquant model = ModelUnquant.newInstance(null);
+    int classifyImage(Bitmap image) throws IOException {
+        ModelUnquant model = ModelUnquant.newInstance(FtcRobotControllerActivity.ctxt);
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
 
@@ -75,6 +83,6 @@ public class TestVision extends OpenCvPipeline {
         String[] classes = {"1", "2", "3"};
         int posReturn = Integer.parseInt(classes[maxPos]);
         model.close();
-        return posReturn + "";
+        return posReturn;
     }
 }

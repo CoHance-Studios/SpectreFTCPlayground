@@ -15,6 +15,7 @@ public class VisionTest extends LinearOpMode {
     TestVision pipeline = new TestVision();
     @Override
     public void runOpMode() throws InterruptedException {
+        int pos = -1;
         // init started
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
@@ -37,11 +38,14 @@ public class VisionTest extends LinearOpMode {
         });
         while(!isStopRequested() && opModeInInit()){
             // init loop
-            telemetry.addData("Pipeline: ", pipeline.log);
+            if(pipeline.pos != -1) {
+                pos = pipeline.pos;
+                telemetry.addData("Pos", pos);
+            }
             telemetry.update();
         }
         // Op Mode Started
-        telemetry.addData("Hi", "No I hate you");
+        telemetry.addData("Pos recognized", pos);
         telemetry.update();
         while(!isStopRequested()){}
     }
